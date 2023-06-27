@@ -1,4 +1,4 @@
-package com.example.miniproject_03;
+package com.example.miniproject_03.ViewPager;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -7,7 +7,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 
-import com.example.miniproject_03.databinding.ActivityMainBinding;
+import com.example.miniproject_03.MainActivity;
 import com.example.miniproject_03.databinding.ActivityViewPagerBinding;
 
 import java.util.ArrayList;

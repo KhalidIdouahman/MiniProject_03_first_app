@@ -1,4 +1,4 @@
-package com.example.miniproject_03;
+package com.example.miniproject_03.ViewPager;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,6 +8,8 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.miniproject_03.R;
 
 import java.util.ArrayList;
 

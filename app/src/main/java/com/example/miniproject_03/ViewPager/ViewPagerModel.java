@@ -1,4 +1,4 @@
-package com.example.miniproject_03;
+package com.example.miniproject_03.ViewPager;
 
 public class ViewPagerModel {
     private String text;

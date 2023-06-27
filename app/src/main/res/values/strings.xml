@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">MiniProject_03</string>
+
+    <string-array name="links_list">
+        <item>https://iili.io/h4a4t7s.png</item>
+        <item>https://iili.io/h4a4dk7.png</item>
+        <item>https://iili.io/h4a4z22.png</item>
+        <item>https://iili.io/h4a4bp9.png</item>
+        <item>https://iili.io/h4a4pie.png</item>
+    </string-array>
+
 </resources>
