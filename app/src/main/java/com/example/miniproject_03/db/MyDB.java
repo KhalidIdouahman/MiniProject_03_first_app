@@ -13,9 +13,9 @@ import java.util.List;
 public interface MyDB {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    void addQuote(Quote quote);
+    long addQuote(Quote quote);
 
-    @Query("select * from Quotes")
+    @Query("select * from " + Quote.TABLE_NAME)
     List<Quote> getAllQuotes();
 
     @Delete

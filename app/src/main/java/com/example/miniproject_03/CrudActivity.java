@@ -5,9 +5,13 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.room.Room;
 import androidx.room.RoomMasterTable;
 
+import android.content.ContentValues;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
+import com.example.miniproject_03.ContentProvider.MyContentProvider;
 import com.example.miniproject_03.RecyclerAdapter.QuotesRecyclerAdapter;
 import com.example.miniproject_03.databinding.ActivityCrudBinding;
 import com.example.miniproject_03.db.MyQuotesDB;
@@ -21,6 +25,7 @@ public class CrudActivity extends AppCompatActivity {
     MyQuotesDB quotesDB;
     QuotesRecyclerAdapter quotesAdapter;
     ArrayList<Quote> listOfQuotes;
+    ContentValues values;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,14 +34,20 @@ public class CrudActivity extends AppCompatActivity {
         root = crudBindingViews.getRoot();
         setContentView(root);
 
-        quotesDB = Room.databaseBuilder(this , MyQuotesDB.class , "Quotesdb")
+        quotesDB = Room.databaseBuilder(this , MyQuotesDB.class , Quote.DATABASE_NAME)
                 .allowMainThreadQueries().build();
 
-        String quote4 = "To be yourself in a world that is constantly trying to make you something else is the greatest accomplishment";
-        String author4 = "Ralph Waldo Emerson";
+        String quote4 = "We can't solve problems by using the same kind of thinking we used when we created them";
+        String author4 = "Albert Einstein" ;
+
+        values = new ContentValues();
+        values.put(Quote.COLUMN_NAME_QUOTES , quote4);
+        values.put(Quote.COLUMN_NAME_AUTHORS , author4);
+        Uri uri = getContentResolver().insert(MyContentProvider.CONTENT_URI , values);
+        Toast.makeText(this, "quote inserted !", Toast.LENGTH_SHORT).show();
 
         for (int i = 1; i < 5; i++) {
-            quotesDB.myDB().addQuote(new Quote(i , quote4 , author4));
+            quotesDB.myDB().addQuote(new Quote( quote4 , author4));
         }
 
 
