@@ -46,7 +46,7 @@ public class MyContentProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         int code = myUri.match(uri);
-        if (code == TABLE_NAME_CODE) {
+        if (code == TABLE_NAME_CODE || code == TABLE_NAME_ID_CODE) {
             Context context = getContext();
             if (context == null) return null;
 
@@ -71,7 +71,7 @@ public class MyContentProvider extends ContentProvider {
     public Cursor query(Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
         int code = myUri.match(uri);
-        if (code == TABLE_NAME_CODE) {
+        if (code == TABLE_NAME_CODE || code == TABLE_NAME_ID_CODE) {
             Context context = getContext();
             if (context == null) return null;
             Cursor cursor = (Cursor) quotesDB.myDB().getAllQuotes();

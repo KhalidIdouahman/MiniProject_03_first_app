@@ -43,12 +43,18 @@ public class QuotesRecyclerAdapter extends RecyclerView.Adapter<QuotesRecyclerAd
 
         holder.updateBtn.setOnClickListener(v ->  {
             Toast.makeText(v.getContext(), "update btn clicked", Toast.LENGTH_SHORT).show();
+
         });
     }
 
     @Override
     public int getItemCount() {
         return quotesList.size();
+    }
+
+    public void setAndNotifyData(ArrayList<Quote> quotes) {
+        this.quotesList = quotes;
+        notifyDataSetChanged();
     }
 
     public static class QuotesViewHolder extends RecyclerView.ViewHolder {
