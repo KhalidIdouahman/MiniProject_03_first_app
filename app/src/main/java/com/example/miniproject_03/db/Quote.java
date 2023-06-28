@@ -1,11 +1,14 @@
 package com.example.miniproject_03.db;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.provider.BaseColumns;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+
+import java.util.ArrayList;
 
 @Entity(tableName = Quote.TABLE_NAME)
 public class Quote {
@@ -57,5 +60,16 @@ public class Quote {
             return quote;
         }
         return null;
+    }
+
+    public static ArrayList<Quote> getArrayListOfQuotes(Cursor cursor) {
+        if (cursor == null) return null;
+        ArrayList<Quote> list = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            list.add(new Quote(cursor.getString(1) , cursor.getString(2)));
+        }
+//        Log.e("TAG", "loadingQuotesFromContentProvider: response " + str);
+        cursor.close();
+        return list;
     }
 }

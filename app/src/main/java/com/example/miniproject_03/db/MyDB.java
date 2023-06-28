@@ -1,5 +1,7 @@
 package com.example.miniproject_03.db;
 
+import android.database.Cursor;
+
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
@@ -16,7 +18,7 @@ public interface MyDB {
     long addQuote(Quote quote);
 
     @Query("select * from " + Quote.TABLE_NAME)
-    List<Quote> getAllQuotes();
+    Cursor getAllQuotes();
 
     @Delete
     void deleteQuote(Quote quote);

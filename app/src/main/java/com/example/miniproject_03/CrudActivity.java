@@ -1,26 +1,28 @@
 package com.example.miniproject_03;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.room.Room;
-import androidx.room.RoomMasterTable;
+import androidx.work.OneTimeWorkRequest;
+import androidx.work.WorkInfo;
+import androidx.work.WorkManager;
 
 import android.content.ContentValues;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
 
-import com.example.miniproject_03.ContentProvider.MyContentProvider;
 import com.example.miniproject_03.RecyclerAdapter.QuotesRecyclerAdapter;
+import com.example.miniproject_03.WorkManager.MyWorker;
 import com.example.miniproject_03.databinding.ActivityCrudBinding;
 import com.example.miniproject_03.db.MyQuotesDB;
 import com.example.miniproject_03.db.Quote;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class CrudActivity extends AppCompatActivity {
     ActivityCrudBinding crudBindingViews;
@@ -52,8 +54,7 @@ public class CrudActivity extends AppCompatActivity {
 //        Toast.makeText(this, "quote inserted !", Toast.LENGTH_SHORT).show();
 
 
-//        to convert the list returned by the database to arrayList .
-        listOfQuotes = new ArrayList<>(quotesDB.myDB().getAllQuotes());
+        listOfQuotes = new ArrayList<>(Quote.getArrayListOfQuotes(quotesDB.myDB().getAllQuotes()));
         quotesAdapter = new QuotesRecyclerAdapter(listOfQuotes);
         crudBindingViews.recyclerShowQuotes.setLayoutManager(new LinearLayoutManager(this));
         crudBindingViews.recyclerShowQuotes.setAdapter(quotesAdapter);
@@ -61,10 +62,11 @@ public class CrudActivity extends AppCompatActivity {
         addBtn = findViewById(R.id.add_form_btn);
         addBtn.setOnClickListener(v -> {
             addQuoteToDb();
-            listOfQuotes = new ArrayList<>(quotesDB.myDB().getAllQuotes());
-            quotesAdapter.setAndNotifyData(listOfQuotes);
         });
 
+        crudBindingViews.saveIv.setOnClickListener(v -> {
+            doTaskUsingWorkManager();
+        });
     }
 
     private void addQuoteToDb() {
@@ -73,8 +75,22 @@ public class CrudActivity extends AppCompatActivity {
 
         quotesDB.myDB().addQuote(new Quote(quoteEt.getText().toString() , authorEt.getText().toString()));
 
+        listOfQuotes = new ArrayList<>(Quote.getArrayListOfQuotes(quotesDB.myDB().getAllQuotes()));
+        quotesAdapter.setAndNotifyData(listOfQuotes);
+
         quoteEt.setText("");
         quoteEt.requestFocus(View.FOCUS_FORWARD);
         authorEt.setText("");
+    }
+
+    private void doTaskUsingWorkManager() {
+
+        OneTimeWorkRequest request = new OneTimeWorkRequest.Builder(MyWorker.class).build();
+        WorkManager.getInstance(this).enqueue(request);
+        WorkManager.getInstance(this).getWorkInfoByIdLiveData(request.getId())
+                .observe(this, workInfo -> {
+                    String status = workInfo.getState().name();
+                    Log.e("TAG", "doTaskUsingWorkManager: " +  status);
+        });
     }
 }

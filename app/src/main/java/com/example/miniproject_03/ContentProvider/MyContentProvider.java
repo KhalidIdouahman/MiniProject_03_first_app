@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.room.Room;
 
@@ -74,8 +75,9 @@ public class MyContentProvider extends ContentProvider {
         if (code == TABLE_NAME_CODE || code == TABLE_NAME_ID_CODE) {
             Context context = getContext();
             if (context == null) return null;
-            Cursor cursor = (Cursor) quotesDB.myDB().getAllQuotes();
+            Cursor cursor = quotesDB.myDB().getAllQuotes();
             cursor.setNotificationUri(context.getContentResolver() , uri);
+            Log.e("TAG", "query: " + cursor.getCount() );
             return cursor;
         } else {
             throw new IllegalArgumentException("Unknown URI : " + uri);
