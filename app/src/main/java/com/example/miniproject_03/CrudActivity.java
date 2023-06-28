@@ -10,6 +10,7 @@ import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
 
+import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.os.Bundle;
 import android.util.Log;
@@ -23,6 +24,10 @@ import com.example.miniproject_03.databinding.ActivityCrudBinding;
 import com.example.miniproject_03.db.MyQuotesDB;
 import com.example.miniproject_03.db.Quote;
 
+import org.xmlpull.v1.XmlPullParser;
+import org.xmlpull.v1.XmlPullParserFactory;
+
+import java.io.InputStream;
 import java.util.ArrayList;
 
 public class CrudActivity extends AppCompatActivity {
@@ -60,7 +65,7 @@ public class CrudActivity extends AppCompatActivity {
 
 
         listOfQuotes = new ArrayList<>(Quote.getArrayListOfQuotes(quotesDB.myDB().getAllQuotes()));
-        quotesAdapter = new QuotesRecyclerAdapter(listOfQuotes);
+        quotesAdapter = new QuotesRecyclerAdapter(this , listOfQuotes);
         crudBindingViews.recyclerShowQuotes.setLayoutManager(new LinearLayoutManager(this));
         crudBindingViews.recyclerShowQuotes.setAdapter(quotesAdapter);
 
@@ -124,5 +129,67 @@ public class CrudActivity extends AppCompatActivity {
         data = new Data.Builder().putStringArray(KEY_TO_SEND_DATA_QUOTE , quotesList)
                 .putStringArray(KEY_TO_SEND_DATA_AUTHOR , authorList).build();
         return data;
+    }
+
+
+    public static ArrayList<String> getColorsFromXmlFile(InputStream resourceFile) {
+        ArrayList<String> colorsArray = new ArrayList<>();
+        try {
+            // Get the XML resource file
+            XmlPullParserFactory factory = XmlPullParserFactory.newInstance();
+            XmlPullParser parser = factory.newPullParser();
+            @SuppressLint("ResourceType") InputStream is = resourceFile;
+            parser.setInput(is, null);
+
+            // Parse the XML file
+            int eventType = parser.getEventType();
+            while (eventType != XmlPullParser.END_DOCUMENT) {
+                if (eventType == XmlPullParser.START_TAG) {
+                    String tagName = parser.getName();
+                    Log.e("TAG", "getColorsFromXmlFile: " + tagName );
+                    if (tagName.equals("color")) {
+                        String famousAttr = parser.getAttributeValue(null, "famous");
+                        if (famousAttr != null && famousAttr.equals("true")) {
+                            // Read color name
+                            String colorName = parser.getAttributeValue(null, "name");
+
+                            // Read color values
+                            int r = -1, g = -1, b = -1;
+                            while (eventType != XmlPullParser.END_TAG || !tagName.equals("color")) {
+                                if (eventType == XmlPullParser.START_TAG) {
+                                    String valueTag = parser.getName();
+                                    Log.e("TAG", "getColorsFromXmlFile: " + valueTag );
+                                    if (valueTag.equals("r")) {
+                                        r = Integer.parseInt(parser.nextText());
+                                    } else if (valueTag.equals("g")) {
+                                        g = Integer.parseInt(parser.nextText());
+                                    } else if (valueTag.equals("b")) {
+                                        b = Integer.parseInt(parser.nextText());
+                                    }
+                                }
+                                eventType = parser.next();
+                                tagName = parser.getName();
+                            }
+
+                            // Process the color data as needed
+                            if (r != -1 && g != -1 && b != -1) {
+                                String color = "#" + r + g + b;
+                                Log.e("TAG", "getColorsFromXmlFile: " + color );
+                                colorsArray.add(color);
+                            }
+                            if (colorsArray.size() >= 3) return colorsArray;
+                        }
+                    }
+                }
+                eventType = parser.next();
+            }
+
+            // Close the input stream
+            is.close();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

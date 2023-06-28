@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<colors>
+    <color name="Violet" famous="true">
+        <r>238</r>
+        <g>130</g>
+        <b>238</b>
+    </color>
+    <color name="GreenYellow" famous="true">
+        <r>173</r>
+        <g>255</g>
+        <b>47</b>
+    </color>
+    <color name="Phlox" famous="false">
+        <r>223</r>
+        <g>0</g>
+        <b>255</b>
+    </color>
+    <color name="Atrovirens" famous="false">
+        <r>13</r>
+        <g>148</g>
+        <b>148</b>
+    </color>
+    <color name="Coral" famous="true">
+        <r>255</r>
+        <g>127</g>
+        <b>80</b>
+    </color>
+    <color name="Sarcoline" famous="false">
+        <r>255</r>
+        <g>221</g>
+        <b>170</b>
+    </color>
+    <color name="LightSalmon" famous="true">
+        <r>255</r>
+        <g>160</g>
+        <b>122</b>
+    </color>
+    <color name="Watchet" famous="false">
+        <r>143</r>
+        <g>186</g>
+        <b>188</b>
+    </color>
+    <color name="PaleVioletRed" famous="true">
+        <r>219</r>
+        <g>112</g>
+        <b>147</b>
+    </color>
+</colors>
