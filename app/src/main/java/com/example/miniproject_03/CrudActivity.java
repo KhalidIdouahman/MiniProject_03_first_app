@@ -4,6 +4,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.Observer;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.room.Room;
+import androidx.work.Constraints;
+import androidx.work.Data;
 import androidx.work.OneTimeWorkRequest;
 import androidx.work.WorkInfo;
 import androidx.work.WorkManager;
@@ -22,7 +24,6 @@ import com.example.miniproject_03.db.MyQuotesDB;
 import com.example.miniproject_03.db.Quote;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class CrudActivity extends AppCompatActivity {
     ActivityCrudBinding crudBindingViews;
@@ -32,6 +33,10 @@ public class CrudActivity extends AppCompatActivity {
     ArrayList<Quote> listOfQuotes;
     ContentValues values;
     Button addBtn;
+    Data data;
+    public static final String KEY_TO_SEND_DATA_QUOTE = "send_data_quote_to_worker";
+    public static final String KEY_TO_SEND_DATA_AUTHOR = "send_data_author_to_worker";
+    public static int QUOTES_NUMBER = -1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,12 +90,39 @@ public class CrudActivity extends AppCompatActivity {
 
     private void doTaskUsingWorkManager() {
 
-        OneTimeWorkRequest request = new OneTimeWorkRequest.Builder(MyWorker.class).build();
+        Constraints constraints = new Constraints.Builder().setRequiresBatteryNotLow(true).build();
+
+        OneTimeWorkRequest request = new OneTimeWorkRequest.Builder(MyWorker.class)
+                .setInputData(sendDataToWorker(listOfQuotes))
+                .setConstraints(constraints)
+                        .build();
+
         WorkManager.getInstance(this).enqueue(request);
         WorkManager.getInstance(this).getWorkInfoByIdLiveData(request.getId())
                 .observe(this, workInfo -> {
                     String status = workInfo.getState().name();
                     Log.e("TAG", "doTaskUsingWorkManager: " +  status);
         });
+    }
+
+    private Data sendDataToWorker(ArrayList<Quote> quotes) {
+        Log.e("TAG", "doTaskUsingWorkManager: quotes size params " + quotes.size() );
+//        for (Quote quote : quotes) {
+//            data = new Data.Builder().putString(KEY_TO_SEND_DATA_QUOTE , quote.getQuote())
+//                    .putString(KEY_TO_SEND_DATA_AUTHOR , quote.getAuthor()).build();
+//            Log.e("TAG", "doTaskUsingWorkManager: " + listOfQuotes.size() );
+//        }
+        QUOTES_NUMBER = quotes.size();
+        String[] quotesList = new String[QUOTES_NUMBER];
+        String[] authorList = new String[QUOTES_NUMBER];
+
+        for (int i = 0; i < quotes.size(); i++) {
+//            Log.e("TAG", "doTaskUsingWorkManager: "+i+ " " + listOfQuotes.size() );
+            quotesList[i] = quotes.get(i).getQuote();
+            authorList[i] = quotes.get(i).getAuthor();
+        }
+        data = new Data.Builder().putStringArray(KEY_TO_SEND_DATA_QUOTE , quotesList)
+                .putStringArray(KEY_TO_SEND_DATA_AUTHOR , authorList).build();
+        return data;
     }
 }
